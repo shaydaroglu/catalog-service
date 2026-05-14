@@ -5,8 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -27,4 +31,12 @@ public class ProductEntity {
 
     @Column(nullable = false, precision = 19, scale = 4)
     private BigDecimal price;
+
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private OffsetDateTime createdAt;
+
+    @Column(nullable = false)
+    @UpdateTimestamp
+    private OffsetDateTime updatedAt;
 }
