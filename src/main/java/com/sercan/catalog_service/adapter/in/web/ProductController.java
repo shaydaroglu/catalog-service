@@ -4,10 +4,12 @@ import com.sercan.catalog_service.adapter.in.web.dto.PageResponse;
 import com.sercan.catalog_service.adapter.in.web.dto.ProductResponse;
 import com.sercan.catalog_service.application.port.in.ProductUseCase;
 import com.sercan.catalog_service.domain.exception.ProductsNotFoundException;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
+@Validated
 public class ProductController {
 
     private final ProductUseCase productUseCase;
@@ -40,7 +43,7 @@ public class ProductController {
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<Void> validate(@RequestBody List<UUID> ids) {
+    public ResponseEntity<Void> validate(@RequestBody @NotEmpty(message = "Product IDs list must not be empty") List<UUID> ids) {
         productUseCase.findAllByIds(ids);
 
         return ResponseEntity.ok().build();

@@ -3,6 +3,7 @@ package com.sercan.catalog_service.adapter.in.web;
 import com.sercan.catalog_service.adapter.in.web.dto.ErrorResponse;
 import com.sercan.catalog_service.domain.exception.ProductsNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,13 @@ public class GlobalExceptionHandler {
                         URI.create(request.getRequestURI()),
                         Map.of("missingIds", ex.getMissingIds())
                 ));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(
+            ConstraintViolationException ex,
+            HttpServletRequest request) {
+        return build(HttpStatus.BAD_REQUEST, "Bad Request", ex.getMessage(), request);
     }
 
     @ExceptionHandler(Exception.class)

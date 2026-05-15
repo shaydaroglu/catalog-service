@@ -1,4 +1,4 @@
-package com.sercan.catalog_service.adapter.out.persistance;
+package com.sercan.catalog_service.adapter.out.persistence;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

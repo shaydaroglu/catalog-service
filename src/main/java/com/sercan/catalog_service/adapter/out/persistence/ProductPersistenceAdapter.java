@@ -1,4 +1,4 @@
-package com.sercan.catalog_service.adapter.out.persistance;
+package com.sercan.catalog_service.adapter.out.persistence;
 
 import com.sercan.catalog_service.application.port.out.ProductRepository;
 import com.sercan.catalog_service.domain.Product;

@@ -1,4 +1,4 @@
-package com.sercan.catalog_service.adapter.out.persistance;
+package com.sercan.catalog_service.adapter.out.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
