@@ -5,10 +5,8 @@ import com.sercan.catalog_service.adapter.in.web.dto.ProductResponse;
 import com.sercan.catalog_service.application.port.in.ProductUseCase;
 import com.sercan.catalog_service.domain.exception.ProductsNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
