@@ -3,6 +3,8 @@ package com.sercan.catalog_service.adapter.out.persistance;
 import com.sercan.catalog_service.application.port.out.ProductRepository;
 import com.sercan.catalog_service.domain.Product;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,5 +28,10 @@ public class ProductPersistenceAdapter implements ProductRepository {
                 .stream()
                 .map(mapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public Page<Product> findAll(Pageable pageable) {
+        return jpaRepository.findAll(pageable).map(mapper::toDomain);
     }
 }

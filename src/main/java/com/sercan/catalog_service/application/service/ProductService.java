@@ -5,6 +5,8 @@ import com.sercan.catalog_service.application.port.out.ProductRepository;
 import com.sercan.catalog_service.domain.Product;
 import com.sercan.catalog_service.domain.exception.ProductsNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProductService implements ProductUseCase {
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public Optional<Product> findById(UUID id) {
@@ -40,5 +42,10 @@ public class ProductService implements ProductUseCase {
         }
 
         return found;
+    }
+
+    @Override
+    public Page<Product> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 }

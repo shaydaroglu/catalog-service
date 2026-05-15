@@ -1,8 +1,11 @@
 package com.sercan.catalog_service.domain.exception;
 
+import lombok.Getter;
+
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 public class ProductsNotFoundException extends RuntimeException {
     private final List<UUID> missingIds;
 
@@ -11,7 +14,4 @@ public class ProductsNotFoundException extends RuntimeException {
         this.missingIds = missingIds;
     }
 
-    public List<UUID> getMissingIds() {
-        return missingIds;
-    }
 }
