@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Component
@@ -26,12 +27,9 @@ public class ProductPersistenceAdapter implements ProductRepository {
     }
 
     @Override
-    public List<Product> findAllByIds(List<UUID> ids) {
+    public Set<UUID> findExistingIds(List<UUID> ids) {
         log.debug("DB lookup {} product IDs", ids.size());
-        return jpaRepository.findAllByIdIn(ids)
-                .stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpaRepository.findExistingIds(ids);
     }
 
     @Override

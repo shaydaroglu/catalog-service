@@ -54,7 +54,7 @@ public class ProductController {
     @PostMapping("/validate")
     public ResponseEntity<Void> validate(@RequestBody @NotEmpty(message = "Product IDs list must not be empty") List<UUID> ids) {
         log.info("Validating {} product IDs", ids.size());
-        productUseCase.findAllByIds(ids);
+        productUseCase.verifyAllByIds(ids);
         log.debug("All product IDs are valid: {}", ids);
         return ResponseEntity.ok().build();
     }

@@ -33,16 +33,12 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
-    public List<Product> findAllByIds(List<UUID> ids) {
+    public void verifyAllByIds(List<UUID> ids) {
         log.debug("Looking up {} product IDs", ids.size());
-        List<Product> found = productRepository.findAllByIds(ids);
-
-        Set<UUID> productIds = found.stream()
-                .map(Product::id)
-                .collect(Collectors.toSet());
+        Set<UUID> found = productRepository.findExistingIds(ids);
 
         List<UUID> missingIds = ids.stream()
-                .filter(id -> !productIds.contains(id))
+                .filter(id -> !found.contains(id))
                 .toList();
 
         if(!missingIds.isEmpty()) {
@@ -51,7 +47,6 @@ public class ProductService implements ProductUseCase {
         }
 
         log.debug("All {} products found", found.size());
-        return found;
     }
 
     @Override

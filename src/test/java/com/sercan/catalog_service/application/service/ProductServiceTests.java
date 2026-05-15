@@ -19,9 +19,11 @@ import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
@@ -76,19 +78,15 @@ public class ProductServiceTests {
     }
 
     @Nested
-    @DisplayName("findAllByIds")
-    class FindAllByIds {
+    @DisplayName("verifyAllByIds")
+    class VerifyAllByIds {
 
         @Test
-        @DisplayName("should return all products when all ids exist")
+        @DisplayName("should not throw exception when all ids of products exist")
         void shouldReturnAllProductsWhenAllIdsExist() {
             List<UUID> ids = List.of(id1, id2, id3);
-            when(productRepository.findAllByIds(ids)).thenReturn(List.of(product1, product2, product3));
-
-            List<Product> result = productService.findAllByIds(ids);
-
-            assertThat(result).hasSize(3);
-            assertThat(result).extracting(Product::id).containsExactlyInAnyOrder(id1, id2, id3);
+            when(productRepository.findExistingIds(ids)).thenReturn(Set.of(id1, id2, id3));
+            assertThatNoException().isThrownBy(() -> productService.verifyAllByIds(ids));
         }
 
         @Test
@@ -96,9 +94,9 @@ public class ProductServiceTests {
         void shouldThrowWhenSomeIdsNotFound() {
             UUID missingId = UUID.randomUUID();
             List<UUID> ids = List.of(id1, missingId);
-            when(productRepository.findAllByIds(ids)).thenReturn(List.of(product1));
+            when(productRepository.findExistingIds(ids)).thenReturn(Set.of(id1));
 
-            assertThatThrownBy(() -> productService.findAllByIds(ids))
+            assertThatThrownBy(() -> productService.verifyAllByIds(ids))
                     .isInstanceOf(ProductsNotFoundException.class)
                     .satisfies(ex -> {
                         ProductsNotFoundException e = (ProductsNotFoundException) ex;
@@ -110,9 +108,9 @@ public class ProductServiceTests {
         @DisplayName("should throw ProductsNotFoundException with all ids when none found")
         void shouldThrowWhenNoIdsFound() {
             List<UUID> ids = List.of(id1, id2);
-            when(productRepository.findAllByIds(ids)).thenReturn(List.of());
+            when(productRepository.findExistingIds(ids)).thenReturn(Set.of());
 
-            assertThatThrownBy(() -> productService.findAllByIds(ids))
+            assertThatThrownBy(() -> productService.verifyAllByIds(ids))
                     .isInstanceOf(ProductsNotFoundException.class)
                     .satisfies(ex -> {
                         ProductsNotFoundException e = (ProductsNotFoundException) ex;

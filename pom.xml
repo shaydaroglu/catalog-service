@@ -152,17 +152,48 @@
 						-XX:+EnableDynamicAgentLoading
 						-Xshare:off
 					</argLine>
+					<environmentVariables>
+						<SPRING_DATASOURCE_URL/>
+						<SPRING_DATASOURCE_USERNAME/>
+						<SPRING_DATASOURCE_PASSWORD/>
+					</environmentVariables>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
+				<configuration>
+					<environmentVariables>
+						<SPRING_DATASOURCE_URL/>
+						<SPRING_DATASOURCE_USERNAME/>
+						<SPRING_DATASOURCE_PASSWORD/>
+					</environmentVariables>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>enforce-java</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireJavaVersion>
+									<version>[21,22)</version>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

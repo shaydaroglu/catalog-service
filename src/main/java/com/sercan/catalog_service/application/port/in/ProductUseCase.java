@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface ProductUseCase {
     Optional<Product> findById(UUID id);
-    List<Product> findAllByIds(List<UUID> ids);
+    void verifyAllByIds(List<UUID> ids);
     Page<Product> findAll(Pageable pageable);
 }
