@@ -4,6 +4,8 @@ import com.sercan.catalog_service.adapter.in.web.dto.PageResponse;
 import com.sercan.catalog_service.adapter.in.web.dto.ProductResponse;
 import com.sercan.catalog_service.application.port.in.ProductUseCase;
 import com.sercan.catalog_service.domain.exception.ProductsNotFoundException;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +27,8 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<PageResponse<ProductResponse>> findAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
 
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(

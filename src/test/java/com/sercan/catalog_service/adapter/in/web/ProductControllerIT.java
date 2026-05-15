@@ -81,6 +81,18 @@ public class ProductControllerIT {
         }
 
         @Test
+        @DisplayName("should return correct element with pagination")
+        void shouldReturnCorrectElementWithPagination() throws Exception {
+            mockMvc.perform(get(PRODUCT_URL)
+                            .param("page", "1")
+                            .param("size", "1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.items", hasSize(1)))
+                    .andExpect(jsonPath("$.totalElements").value(2))
+                    .andExpect(jsonPath("$.totalPages").value(2));
+        }
+
+        @Test
         @DisplayName("should return empty page when no products exist")
         void shouldReturnEmptyPage() throws Exception {
             jpaRepository.deleteAll();
@@ -89,6 +101,33 @@ public class ProductControllerIT {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.items", hasSize(0)))
                     .andExpect(jsonPath("$.totalElements").value(0));
+        }
+
+        @Test
+        @DisplayName("should return 400 when page is negative")
+        void shouldReturn400WhenPageIsNegative() throws Exception {
+            mockMvc.perform(get("/api/v1/products")
+                            .param("page", "-1"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400));
+        }
+
+        @Test
+        @DisplayName("should return 400 when size exceeds maximum")
+        void shouldReturn400WhenSizeExceedsMax() throws Exception {
+            mockMvc.perform(get("/api/v1/products")
+                            .param("size", "101"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400));
+        }
+
+        @Test
+        @DisplayName("should return 400 when size is zero")
+        void shouldReturn400WhenSizeIsZero() throws Exception {
+            mockMvc.perform(get("/api/v1/products")
+                            .param("size", "0"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400));
         }
     }
 
