@@ -4,6 +4,9 @@ import com.sercan.catalog_service.adapter.in.web.dto.ErrorResponse;
 import com.sercan.catalog_service.domain.exception.ProductsNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +19,14 @@ import java.net.URI;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(
             NoResourceFoundException ex,
             HttpServletRequest request) {
+        log.warn("No resource found: {}", request.getRequestURI());
         return build(HttpStatus.NOT_FOUND, "Not Found", ex.getMessage(), request);
     }
 
@@ -28,6 +34,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleProductsNotFound(
             ProductsNotFoundException ex,
             HttpServletRequest request) {
+        log.warn("Products not found: {}", ex.getMissingIds());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_PROBLEM_JSON)
@@ -44,6 +51,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleConstraintViolation(
             ConstraintViolationException ex,
             HttpServletRequest request) {
+        log.warn("Constraint violation on {}: {}", request.getRequestURI(), ex.getMessage());
         return build(HttpStatus.BAD_REQUEST, "Bad Request", ex.getMessage(), request);
     }
 
@@ -51,6 +59,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleNotReadable(
             HttpMessageNotReadableException ex,
             HttpServletRequest request) {
+        log.warn("Unreadable request body on {}: {}", request.getRequestURI(), ex.getMessage());
         return build(HttpStatus.BAD_REQUEST, "Bad Request", "Request body is missing or malformed", request);
     }
 
@@ -58,7 +67,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGeneric(
             Exception ex,
             HttpServletRequest request) {
-        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", ex.getMessage(), request);
+        log.error("Unexpected error on {}: {}", request.getRequestURI(), ex.getMessage(), ex);
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error",
+                "An unexpected error occurred", request);
     }
 
     private ResponseEntity<ErrorResponse> build(

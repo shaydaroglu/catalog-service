@@ -81,9 +81,17 @@ public class ProductControllerIT {
         }
 
         @Test
-        @DisplayName("should return correct element with pagination")
-        void shouldReturnCorrectElementWithPagination() throws Exception {
-            mockMvc.perform(get(PRODUCT_URL)
+        @DisplayName("should return correct elements with pagination")
+        void shouldReturnCorrectElementsWithPagination() throws Exception {
+            mockMvc.perform(get("/api/v1/products")
+                            .param("page", "0")
+                            .param("size", "1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.items", hasSize(1)))
+                    .andExpect(jsonPath("$.totalElements").value(2))
+                    .andExpect(jsonPath("$.totalPages").value(2));
+
+            mockMvc.perform(get("/api/v1/products")
                             .param("page", "1")
                             .param("size", "1"))
                     .andExpect(status().isOk())
