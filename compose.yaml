@@ -17,6 +17,8 @@ services:
       retries: 10
     volumes:
       - catalog-db-data:/var/lib/postgresql/data
+    networks:
+      - shared-network
 
   catalog-service:
     build:
@@ -34,6 +36,8 @@ services:
       TZ: ${TZ}
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
+    networks:
+      - shared-network
 
   catalog-test:
     build:
@@ -53,3 +57,8 @@ services:
 
 volumes:
   catalog-db-data:
+
+networks:
+  shared-network:
+    name: services-network
+    driver: bridge
